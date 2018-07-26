@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant"
+         name="dream"
+         default="build"
+         basedir=".">
+
+    <property name="src.dir" value="src" />
+    <property name="web.dir" value="war" />
+    <property name="build.dir" value="${web.dir}/WEB-INF/classes" />
+    <property name="name" value="dream" />
+    <property file="build.properties" />
+
+    <path id="master-classpath">
+        <fileset dir="${web.dir}/WEB-INF/lib">
+            <include name="*.jar" />
+        </fileset>
+
+        <pathelement path="${build.dir}" />
+    </path>
+
+    <target name="info">
+        <echo>Hi! Welcome to classified Mission DREAM</echo>
+    </target>
+
+    <target name="resolve" description="retrieve dependencies with ivy">
+        <ivy:retrieve />
+    </target>
+
+    <target name="build" description="Compile java files">
+        <mkdir dir="${build.dir}" />
+
+        <javac destdir="${build.dir}" source="${jdk.version}" target="${jdk.version}">
+            <src path="${src.dir}" />
+            <classpath refid="master-classpath" />
+        </javac>
+    </target>
+
+    <target name="clean" description="Clean output directories">
+        <delete>
+            <fileset dir="${build.dir}">
+                <include name="**/*.class" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="init" description="Create project structure">
+        <mkdir dir="${src.dir}" />
+        <mkdir dir="${web.dir}" />
+        <mkdir dir="${build.dir}" />
+    </target>
+
+</project>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="com.tqin" module="dream" />
+
+    <dependencies>
+        <dependency org="org.springframework" name="spring-core" rev="${spring.version}" />
+        <dependency org="org.springframework" name="spring-beans" rev="${spring.version}" />
+        <dependency org="org.springframework" name="spring-context" rev="${spring.version}" />
+    </dependencies>
+</ivy-module>
+
