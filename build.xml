@@ -6,47 +6,139 @@
 
     <property name="src.dir" value="src" />
     <property name="web.dir" value="war" />
-    <property name="build.dir" value="${web.dir}/WEB-INF/classes" />
+    <property name="target.dir" value="target" />
+    <property name="build.dir" value="${web.dir}/WEB-INF" />
+    <property name="build.classes" value="${build.dir}/classes" />
+    <property name="resources.dir" value="${src.dir}/resources" />
+    <property name="lib.dir" value="${build.dir}/lib" />
+
+    <property name="base.transient.dir" value="${basedir}/build-transient-src" />
+    <property name="java.transient.dir" value="${base.transient.dir}/java" />
+
+    <property name="soy.src.dir" value="${resources.dir}/soy" />
+    <property name="soy.generated.dir" value="${java.transient.dir}/com/tqin/dream/soy/tmpl" />
+    <property name="soy.generated.package" value="com.tqin.dream.soy.tmpl" />
+
     <property name="name" value="dream" />
     <property file="build.properties" />
 
-    <path id="master-classpath">
-        <fileset dir="${web.dir}/WEB-INF/lib">
-            <include name="*.jar" />
-        </fileset>
+    <!--<path id="master-classpath">-->
+        <!--<fileset dir="${lib.dir}">-->
+            <!--<include name="*.jar" />-->
+        <!--</fileset>-->
 
-        <pathelement path="${build.dir}" />
-    </path>
+        <!--<pathelement path="${build.dir}" />-->
+    <!--</path>-->
 
     <target name="info">
         <echo>Hi! Welcome to classified Mission DREAM</echo>
     </target>
 
-    <target name="resolve" description="retrieve dependencies with ivy">
-        <ivy:retrieve />
+    <target name="init" description="Create project structure and timestamp">
+        <mkdir dir="${src.dir}" />
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${lib.dir}" />
+        <mkdir dir="${target.dir}" />
+
+        <tstamp>
+            <format property="now" pattern="yyyyMMddHHmmss" locale="en,US" />
+        </tstamp>
     </target>
 
-    <target name="build" description="Compile java files">
-        <mkdir dir="${build.dir}" />
+    <target name="resolve" description="retrieve dependencies with ivy">
+        <echo message="Getting dependencies..." />
+        <ivy:retrieve pattern="${lib.dir}/[artifact]-[revision].[ext]"/>
 
-        <javac destdir="${build.dir}" source="${jdk.version}" target="${jdk.version}">
+        <ivy:cachepath pathid="compile.path" conf="compile" />
+        <ivy:cachepath pathid="runtime.path" conf="runtime" />
+        <ivy:cachepath pathid="test.path" conf="test" />
+    </target>
+
+    <target name="compile" description="compile source" depends="init,resolve,generate-parseinfo-soy">
+        <mkdir dir="${build.classes}" />
+        <javac destdir="${build.classes}" source="${jdk.version}" target="${jdk.version}"
+               debug="true" includeantruntime="false" classpathref="compile.path">
             <src path="${src.dir}" />
-            <classpath refid="master-classpath" />
+            <!--<classpath refid="master-classpath" />-->
         </javac>
     </target>
 
-    <target name="clean" description="Clean output directories">
-        <delete>
-            <fileset dir="${build.dir}">
-                <include name="**/*.class" />
+    <target name="copy-resources" description="copy java resources (xml, properties)">
+        <copy todir="${build.classes}">
+            <fileset dir="${resources.dir}">
+                <include name="**/*.xml" />
+                <include name="**/*.properties" />
             </fileset>
-        </delete>
+        </copy>
     </target>
 
-    <target name="init" description="Create project structure">
-        <mkdir dir="${src.dir}" />
-        <mkdir dir="${web.dir}" />
-        <mkdir dir="${build.dir}" />
+    <target name="clean" description="Clean output directories">
+        <delete dir="${build.classes}" />
+        <delete dir="${base.transient.dir}" />
+    </target>
+
+    <target name="package" depends="clean,compile,copy-resources"
+            description="create war file for deployment">
+
+        <war destfile="${target.dir}/${name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+
+        </war>
+
+    </target>
+
+    <!--Soy Stuff-->
+    <fileset id="soy.src.files" dir="${soy.src.dir}" includes="**/*.soy"/>
+
+    <!--Generate Java parse info for given soy files-->
+    <macrodef name="m_generate-parseinfo-soy">
+        <attribute name="javaPackage" />
+        <attribute name="outputDirectory" />
+        <attribute name="inputFiles" />
+
+        <!--
+            fork: invoke a new JVM, dir: directory to invoke the JVM in,
+            @param javaPackage Java package of the generated source. must match outputDirectory
+            @param outputDirectory Target dir for Java output
+            @param inputFiles Soy source files
+        -->
+        <sequential>
+            <java classname="com.google.template.soy.SoyParseInfoGenerator" fork="true" failonerror="true" maxmemory="256m" dir=".">
+                <classpath refid="compile.path" />
+                <arg line="--javaClassNameSource filename" />
+                <arg line="--javaPackage @{javaPackage}" />
+                <arg line="--outputDirectory @{outputDirectory}" />
+                <arg line="--srcs @{inputFiles}" />
+            </java>
+        </sequential>
+    </macrodef>
+
+    <target name="check-soy-update">
+        <uptodate targetfile="${soy.generated.dir}" property="soy.uptodate">
+            <srcfiles refid="soy.src.files" />
+        </uptodate>
+
+        <condition property="skip.soy.parse">
+            <or>
+                <isset property="soy.uptodate" />
+            </or>
+        </condition>
+    </target>
+
+    <target name="generate-parseinfo-soy" depends="init,check-soy-update"
+            unless="skip.soy.parse">
+        <mkdir dir="${soy.generated.dir}" />
+
+        <pathconvert property="soyfiles" refid="soy.src.files" pathsep=" " />
+
+        <echo message="${soyfiles}" />
+
+        <m_generate-parseinfo-soy javaPackage="${soy.generated.package}"
+                                  outputDirectory="${soy.generated.dir}"
+                                  inputFiles="${soyfiles}" />
+
+        <touch datetime="${now}" pattern="yyyyMMddHHmmss" >
+            <dirset dir="${soy.generated.dir}" />
+        </touch>
     </target>
 
 </project>

@@ -4,10 +4,19 @@
         xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="com.tqin" module="dream" />
 
+    <!-- Classpath management -->
+    <configurations defaultconfmapping="compile->default">
+        <conf name="compile" description="compile dependencies" />
+        <conf name="runtime" description="runtime dependencies" extends="compile" />
+        <conf name="test" description="test dependencies" extends="runtime" />
+    </configurations>
+
     <dependencies>
         <dependency org="org.springframework" name="spring-core" rev="${spring.version}" />
         <dependency org="org.springframework" name="spring-beans" rev="${spring.version}" />
         <dependency org="org.springframework" name="spring-context" rev="${spring.version}" />
+
+        <dependency org="com.google.template" name="soy" rev="${soy.version}" />
     </dependencies>
 </ivy-module>
 
