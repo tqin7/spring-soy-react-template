@@ -47,6 +47,7 @@
 
     <target name="resolve" description="retrieve dependencies with ivy">
         <echo message="Getting dependencies..." />
+        <mkdir dir="${lib.dir}" />
         <ivy:retrieve pattern="${lib.dir}/[artifact]-[revision].[ext]"/>
 
         <ivy:cachepath pathid="compile.path" conf="compile" />

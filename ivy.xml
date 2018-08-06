@@ -15,6 +15,8 @@
         <dependency org="org.springframework" name="spring-core" rev="${spring.version}" />
         <dependency org="org.springframework" name="spring-beans" rev="${spring.version}" />
         <dependency org="org.springframework" name="spring-context" rev="${spring.version}" />
+        <dependency org="org.springframework" name="spring-web" rev="${spring.version}" />
+        <dependency org="org.springframework" name="spring-webmvc" rev="${spring.version}" />
 
         <dependency org="com.google.template" name="soy" rev="${soy.version}" />
     </dependencies>
