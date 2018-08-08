@@ -29,7 +29,10 @@ public class IndexController {
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public ModelAndView doGetHello(HttpServletRequest request, HttpServletResponse response) {
-        return new ModelAndView(IndexSoyInfo.TemplateName.INDEX);
+        return new ModelAndView(IndexSoyInfo.TemplateName.INDEX,
+                new ImmutableMap.Builder<String, Object>()
+                        .put("name", "tian")
+                        .build());
     }
 
 }

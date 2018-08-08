@@ -1,11 +1,15 @@
 {namespace com.tqin.dream.templates}
 
+
 {template .index}
+
+    {@param name : string}
+
 <!DOCTYPE html>
 <html>
     <body>
         <div>
-            hi this is index
+            hi this is {$name}
         </div>
     </body>
 </html>
