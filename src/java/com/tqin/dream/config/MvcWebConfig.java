@@ -17,7 +17,7 @@ public class MvcWebConfig extends WebMvcConfigurerAdapter {
     /* Serve static resources with Spring */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("/static");
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources");
     }
 
     @Override

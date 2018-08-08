@@ -2,3 +2,6 @@
 /build-transient-src
 **/classes
 /target
+/.idea
+**/.DS_Store
+/out

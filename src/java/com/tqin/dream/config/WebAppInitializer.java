@@ -13,7 +13,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext container) {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.register(AppConfig.class, ViewResolverConfig.class);
+        context.register(AppConfig.class);
 
         container.addListener(new ContextLoaderListener(context));
 
@@ -21,8 +21,8 @@ public class WebAppInitializer implements WebApplicationInitializer {
         dispatcherServlet.register(MvcWebConfig.class);
 
         ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(dispatcherServlet));
-        dispatcher.addMapping("/");
         dispatcher.setLoadOnStartup(1);
+        dispatcher.addMapping("/");
     }
 
 }
