@@ -1,16 +1,23 @@
 {namespace com.tqin.dream.templates}
 
-
 {template .index}
 
-    {@param name : string}
+  {@param name : string}
 
 <!DOCTYPE html>
 <html>
-    <body>
-        <div>
-            hi this is {$name}
-        </div>
-    </body>
+
+  <head>
+      <link rel="stylesheet" href="/resources/styles/test.css">
+  </head>
+
+  <body>
+    <div>
+      hi this is {$name}
+    </div>
+    <div id="root"></div>
+
+    <script type="text/javascript" src="/resources/scripts/bundle.js"></script>
+  </body>
 </html>
 {/template}

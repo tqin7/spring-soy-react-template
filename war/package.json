@@ -5,13 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --progress --colors --hot --config ./webpack.config.js",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./app --fix"
+    "lint": "eslint --ext .jsx --ext .js app --fix"
   },
   "author": "Tian Qin <tianqin@berkeley.edu>",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
