@@ -22,6 +22,8 @@
     <property name="name" value="dream" />
     <property file="build.properties" />
 
+    <property environment="env" />
+
     <!--<path id="master-classpath">-->
         <!--<fileset dir="${lib.dir}">-->
             <!--<include name="*.jar" />-->
@@ -100,7 +102,12 @@
 
     </target>
 
-    <target name="main" depends="package" />
+    <target name="deploy-war-to-tomcat" depends="package"
+            description="copy war file to webapps directory of local tomcat for deploy">
+        <copy file="${target.dir}/${name}.war" todir="${env.CATALINA_HOME}/webapps" />
+    </target>
+
+    <target name="main" depends="deploy-war-to-tomcat" />
 
     <!--Below will be Soy Stuff-->
     <fileset id="soy.src.files" dir="${soy.src.dir}" includes="**/*.soy"/>
