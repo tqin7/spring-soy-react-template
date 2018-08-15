@@ -18,20 +18,14 @@ public class IndexController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public String doGet(HttpServletRequest request, HttpServletResponse response) {
-        return "hi this is Tian";
-    }
-
-    @RequestMapping(value = "/path", method = RequestMethod.GET)
-    @ResponseBody
-    public String doGetPath(HttpServletRequest request, HttpServletResponse response) {
-        return "this renders right";
+        return "This is homepage";
     }
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET)
     public ModelAndView doGetHello(HttpServletRequest request, HttpServletResponse response) {
         return new ModelAndView(IndexSoyInfo.TemplateName.INDEX,
                 new ImmutableMap.Builder<String, Object>()
-                        .put("name", "tian")
+                        .put("name", "World")
                         .build());
     }
 
